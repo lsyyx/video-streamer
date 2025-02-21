@@ -1,6 +1,6 @@
 package com.example.data.di
 
-import com.example.data.constants.AppConstants
+import com.example.core.constants.AppConstants
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -21,7 +21,9 @@ object NetworkModule {
     fun provideInterceptor(): Interceptor {
         return Interceptor { chain ->
             val request = chain.request()
-            val newRequest = request.newBuilder().build()
+            val newRequest = request.newBuilder()
+                .addHeader("Authorization", "Bearer ${AppConstants.API_KEY}")
+                .build()
             chain.proceed(newRequest)
         }
     }

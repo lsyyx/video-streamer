@@ -10,4 +10,6 @@ object HomeRoute
 object VideosRoute
 
 @Serializable
-data class VideoPlaybackRoute(val videoItem: VideoItem)
+data class VideoPlaybackRoute(
+    val videoItem: VideoItem,
+)

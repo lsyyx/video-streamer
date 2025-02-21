@@ -1,20 +1,26 @@
 package com.example.data.mapper
 
-import com.example.data.enteties.YouTubeVideoItem
-import com.example.data.enteties.YouTubeVideoResponse
+import com.example.data.enteties.VideoDto
+import com.example.data.enteties.VideoListDto
 import com.example.domain.enteties.VideoItem
-import kotlin.time.Duration
+import java.util.Locale
 
-fun YouTubeVideoItem.toVideo() = VideoItem(
+
+fun VideoDto.toVideo() = VideoItem(
     id = id,
-    title = snippet.title,
-    url = id.toVideoUrl(),
-    image = snippet.thumbnails.medium.url,
-    duration = contentDetails.duration.toFormattedDuration(),
+    title = title,
+    url = urls.mp4,
+    image = thumbnail,
+    duration = duration.toFormattedDuration(),
 )
 
-fun YouTubeVideoResponse.toVideoList() = items.map { it.toVideo() }
+fun VideoListDto.toVideoList() = hits.map { it.toVideo() }
 
-fun String.toVideoUrl() = "https://www.youtube.com/watch?v=$this"
+fun Double.toFormattedDuration(): String {
+    val totalSeconds = this.toInt() //
+    val minutes = (totalSeconds % 3600) / 60
+    val seconds = totalSeconds % 60
+    val format = "%02d:%02d" // coverr's api provides only short video
+    return String.format(Locale.ROOT, format, minutes, seconds)
+}
 
-fun String.toFormattedDuration() = Duration.parseOrNull(this).toString()

@@ -56,6 +56,9 @@ dependencies {
     // Gson
     implementation (libs.converter.gson)
 
+    // Room
+
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

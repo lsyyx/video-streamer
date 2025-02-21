@@ -5,8 +5,8 @@ import com.example.domain.enteties.VideoItem
 import com.example.domain.enteties.VideoList
 import kotlinx.coroutines.flow.Flow
 
-interface YoutubeApiRepository {
+interface CoverrApiRepository {
 
-    suspend fun getPopularVideo() : Flow<UiState<VideoList>>
-    suspend fun getVideo(id: Long) : Flow<UiState<VideoItem>>
+    suspend fun getVideoList(query: String? = null): Flow<UiState<VideoList>>
+    suspend fun getVideo(id: String): Flow<UiState<VideoItem>>
 }

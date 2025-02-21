@@ -19,7 +19,6 @@ fun AppNavGraph(
         navController = navController,
         startDestination = HomeRoute
     ) {
-
         composable<HomeRoute> { HomeScreen() { navController.navigate(VideosRoute) } }
         composable<VideosRoute> {
             VideosScreen() { videoItem ->
@@ -28,12 +27,13 @@ fun AppNavGraph(
         }
         composable<VideoPlaybackRoute>(
             typeMap = mapOf(
-                typeOf<VideoItem>() to navTypeOf<VideoItem>()
+                typeOf<VideoItem>() to VideoNavType.VideoType
             )
         ) { backStackEntry ->
-            val videoItem = backStackEntry.toRoute<VideoPlaybackRoute>()
+            val arg = backStackEntry.toRoute<VideoPlaybackRoute>()
             VideoPlaybackScreen(
-                videoItem = videoItem.videoItem
+                videoItem = arg.videoItem,
+                isFullScreen = true,
             ) { navController.navigateUp() } //or popBackStack
         }
     }

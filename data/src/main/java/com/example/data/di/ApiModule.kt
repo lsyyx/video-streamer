@@ -1,6 +1,6 @@
 package com.example.data.di
 
-import com.example.data.api.YoutubeApiService
+import com.example.data.api.CoverrApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +14,7 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideYoutubeApi(retrofit: Retrofit): YoutubeApiService {
-        return retrofit.create(YoutubeApiService::class.java)
+    fun provideCoverrApi(retrofit: Retrofit): CoverrApiService {
+        return retrofit.create(CoverrApiService::class.java)
     }
 }
