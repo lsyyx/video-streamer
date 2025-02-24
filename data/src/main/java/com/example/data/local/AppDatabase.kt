@@ -9,5 +9,5 @@ import androidx.room.RoomDatabase
     version = 2
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun videosDao() : VideoDao
+    abstract fun videosDao(): VideoDao
 }

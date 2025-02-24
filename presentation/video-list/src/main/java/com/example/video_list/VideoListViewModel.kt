@@ -39,6 +39,7 @@ class VideoListViewModel @Inject constructor(
     val query: StateFlow<String> = _query.asStateFlow()
 
     val listState = mutableStateOf(LazyListState())
+
     @OptIn(ExperimentalMaterial3Api::class)
     val pullToRefreshState = mutableStateOf(PullToRefreshState())
 

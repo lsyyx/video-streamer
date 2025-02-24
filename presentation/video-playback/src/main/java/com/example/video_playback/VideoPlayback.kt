@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
@@ -38,7 +37,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
-import com.example.common.AppLoader
 import com.example.domain.enteties.VideoItem
 
 @SuppressLint("SourceLockedOrientationActivity")
@@ -49,7 +47,6 @@ fun VideoPlaybackScreen(
     viewModel: VideoPlaybackViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
 ) {
-    Log.d("VideoPlaybackViewModel", videoItem.toString())
     val context = LocalContext.current
     val isPlayerInitialized by viewModel.isPlayerInitialized.collectAsState()
     val activity = context as? Activity

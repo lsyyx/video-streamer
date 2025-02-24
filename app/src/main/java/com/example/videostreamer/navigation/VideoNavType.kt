@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.example.videostreamer.navigation
 
 import android.net.Uri
@@ -19,13 +17,13 @@ object VideoNavType {
             bundle: Bundle,
             key: String,
         ): VideoItem? {
+            @Suppress("DEPRECATION")
             return when {
                 SDK_INT >= Build.VERSION_CODES.TIRAMISU -> bundle.getParcelable(
                     key,
                     VideoItem::class.java
                 )
-
-                else -> bundle.getParcelable<VideoItem>(key)
+                else -> bundle.getParcelable(key)
             }
         }
 

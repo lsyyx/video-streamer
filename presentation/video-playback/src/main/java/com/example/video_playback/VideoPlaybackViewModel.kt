@@ -1,7 +1,6 @@
 package com.example.video_playback
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -37,8 +36,6 @@ class VideoPlaybackViewModel @Inject constructor() : ViewModel() {
 
     fun initPlayer(context: Context, videoUrl: String) {
         if (_exoPlayer != null) return
-
-        Log.d("VideoPlaybackViewModel", videoUrl)
 
         mediaItem = MediaItem.fromUri(videoUrl)
 

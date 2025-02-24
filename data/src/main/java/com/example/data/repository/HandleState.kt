@@ -1,6 +1,5 @@
 package com.example.data.repository
 
-import android.util.Log
 import com.example.core.data_state.Empty
 import com.example.core.data_state.Error
 import com.example.core.data_state.Exception
@@ -27,6 +26,7 @@ suspend fun <T : Any, R : Any> handleState(
                     Success(transform(body))
                 }
             }
+
             else -> Error(code = response.code(), message = response.message())
         }
 
