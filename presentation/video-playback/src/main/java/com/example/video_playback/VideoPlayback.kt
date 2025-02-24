@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
@@ -52,7 +53,7 @@ fun VideoPlaybackScreen(
     val activity = context as? Activity
     val isFullscreen by viewModel.isFullScreen.collectAsState()
 
-    LaunchedEffect(videoItem.url) {
+    LaunchedEffect(Unit) {
         viewModel.initPlayer(context, videoItem.url)
     }
 
@@ -121,11 +122,14 @@ fun VideoPlaybackScreen(
 
         BackHandler {
             if (isFullscreen) {
-                activity?.requestedOrientation = SCREEN_ORIENTATION_PORTRAIT
+                activity?.requestedOrientation = SCREEN_ORIENTATION_UNSPECIFIED
                 viewModel.setFullscreen(false)
             } else {
+                activity?.requestedOrientation = SCREEN_ORIENTATION_UNSPECIFIED
                 onNavigateBack()
             }
         }
     }
 }
+
+
