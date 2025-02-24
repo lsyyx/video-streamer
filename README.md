@@ -35,5 +35,7 @@ git clone https://github.com/lsyyx/music-streamer.git
 3. Синхронизируйте зависимости (Gradle Sync)
 4. Запустите приложение на эмуляторе или физическом устройстве.
 
+<img src="https://github.com/lsyyx/video-streamer/blob/main/gif/screen_record.gif" width="300"/>
+
 ## License
 Этот проект лицензируется под лицензией **Apache License 2.0**. Подробности см. в файле [LICENSE](LICENSE).
