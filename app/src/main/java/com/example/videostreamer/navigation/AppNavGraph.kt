@@ -33,8 +33,7 @@ fun AppNavGraph(
             val arg = backStackEntry.toRoute<VideoPlaybackRoute>()
             VideoPlaybackScreen(
                 videoItem = arg.videoItem,
-                isFullScreen = true,
-            ) { navController.navigateUp() } //or popBackStack
+            ) { navController.popBackStack() }
         }
     }
 }

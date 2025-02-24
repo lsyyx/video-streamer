@@ -74,5 +74,7 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.ui.test.junit4.android)
+    debugImplementation(libs.ui.test.manifest)
     androidTestImplementation(libs.androidx.espresso.core)
 }

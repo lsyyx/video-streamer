@@ -1,6 +1,6 @@
 package com.example.video_list
 
-import android.graphics.drawable.Icon
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -33,16 +36,14 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -60,66 +61,30 @@ import com.example.domain.enteties.VideoList
 @Composable
 fun VideosScreen(
     viewModel: VideoListViewModel = hiltViewModel(),
-    onNavigateToPlayback: (VideoItem) -> Unit,
+    onNavigateToPlayback: (VideoItem) -> Unit = {},
 ) {
     val videosState by viewModel.videoList.collectAsState()
-    var query by remember { mutableStateOf("") }
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
-    val pullToRefreshState = rememberPullToRefreshState()
+    val query by viewModel.query.collectAsState()
+
     val snackBarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(Unit) {
-        viewModel.loadVideos()
-    }
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             SearchVideo(
                 query = query,
-                onClear = {
-                    query = ""
-                    viewModel.loadVideos()
-                },
-                onQueryChange = { query = it }
+                onClear = viewModel::clearQuery,
+                onQueryChange = { viewModel.updateQuery(it) }
             ) { viewModel.searchVideo(it) }
             HandleContentState(videosState, snackBarHostState = snackBarHostState) {
                 VideoList(
                     videos = it,
-                    state = pullToRefreshState,
+                    listState = viewModel.listState.value,
+                    pullState = viewModel.pullToRefreshState.value,
                     onRefresh = viewModel::refresh,
                     isRefreshing = isRefreshing,
-                    onNavigateToPlayback = onNavigateToPlayback
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun VideoList(
-    videos: VideoList,
-    modifier: Modifier = Modifier,
-    state: PullToRefreshState,
-    isRefreshing: Boolean,
-    onRefresh: () -> Unit,
-    onNavigateToPlayback: (VideoItem) -> Unit,
-) {
-    PullToRefreshBox(
-        state = state,
-        isRefreshing = isRefreshing,
-        onRefresh = onRefresh,
-    ) {
-        LazyColumn(
-            modifier = modifier
-                .fillMaxWidth(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(videos) { videoItem ->
-                VideoItemCard(
-                    videoItem = videoItem,
                     onNavigateToPlayback = onNavigateToPlayback
                 )
             }
@@ -136,6 +101,7 @@ fun SearchVideo(
     onSearch: (String) -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+
     TextField(
         value = query,
         onValueChange = {
@@ -164,6 +130,79 @@ fun SearchVideo(
             }
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun VideoList(
+    modifier: Modifier = Modifier,
+    videos: VideoList,
+    listState: LazyListState,
+    pullState: PullToRefreshState,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    onNavigateToPlayback: (VideoItem) -> Unit,
+) {
+    val configuration = LocalConfiguration.current
+    val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    PullToRefreshBox(
+        state = pullState,
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+    ) {
+        if (isPortrait) {
+            PortraitLazyColumn(modifier, listState, videos, onNavigateToPlayback)
+        } else {
+            LandscapeLazyRow(modifier, listState, videos, onNavigateToPlayback)
+        }
+    }
+}
+
+@Composable
+fun PortraitLazyColumn(
+    modifier: Modifier = Modifier,
+    listState: LazyListState,
+    videos: VideoList,
+    onNavigateToPlayback: (VideoItem) -> Unit,
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxWidth(),
+        state = listState,
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        items(videos) { videoItem ->
+            VideoItemCard(
+                videoItem = videoItem,
+                onNavigateToPlayback = onNavigateToPlayback
+            )
+        }
+    }
+}
+
+@Composable
+fun LandscapeLazyRow(
+    modifier: Modifier = Modifier,
+    listState: LazyListState,
+    videos: VideoList,
+    onNavigateToPlayback: (VideoItem) -> Unit,
+) {
+    LazyRow(
+        modifier = modifier
+            .fillMaxWidth(),
+        state = listState,
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        items(videos) { videoItem ->
+            VideoItemCard(
+                videoItem = videoItem,
+                onNavigateToPlayback = onNavigateToPlayback
+            )
+        }
+    }
 }
 
 @Composable
