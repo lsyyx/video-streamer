@@ -12,16 +12,17 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,7 +35,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,6 +45,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -107,9 +109,10 @@ fun SearchVideo(
         onValueChange = {
             onQueryChange(it)
         },
-        label = { Text("Search Video") },
+        label = { Text(stringResource(R.string.search_video_label)) },
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .testTag("search_field"),
         singleLine = true,
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = ImeAction.Done
@@ -125,7 +128,10 @@ fun SearchVideo(
                 IconButton(onClick = {
                     onClear()
                 }) {
-                    Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear text")
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = stringResource(R.string.clear_text_icon_description)
+                    )
                 }
             }
         }
@@ -212,7 +218,8 @@ fun VideoItemCard(
 ) {
     Surface(
         modifier = Modifier
-            .clickable { onNavigateToPlayback(videoItem) },
+            .clickable { onNavigateToPlayback(videoItem) }
+            .testTag("video_item"),
         shape = RoundedCornerShape(8.dp),
         shadowElevation = 4.dp,
         color = MaterialTheme.colorScheme.surface
@@ -225,10 +232,24 @@ fun VideoItemCard(
             ) {
             AsyncImage(
                 model = videoItem.image,
-                contentDescription = "Video thumbnail",
+                contentDescription = stringResource(R.string.video_thumbnail_description),
                 modifier = Modifier.fillMaxWidth(),
                 contentScale = ContentScale.Crop
             )
+            IconButton(
+                onClick = { onNavigateToPlayback(videoItem) },
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .background(Color.Black.copy(alpha = 0.6f), shape = RoundedCornerShape(50))
+                    .padding(2.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = stringResource(R.string.play_video_icon_description),
+                    tint = Color.White,
+                )
+            }
+
             VideoInfo(videoItem, Modifier.align(Alignment.BottomStart))
         }
     }

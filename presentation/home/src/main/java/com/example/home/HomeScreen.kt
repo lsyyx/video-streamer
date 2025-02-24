@@ -7,6 +7,5 @@ import androidx.compose.runtime.Composable
 fun HomeScreen(
     onNavigateToVideoList: () -> Unit = {}
 ) {
-    Log.d("HomeScreen", "HomeScreen called")
     onNavigateToVideoList()
 }

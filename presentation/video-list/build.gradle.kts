@@ -56,6 +56,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    androidTestImplementation(libs.hilt.android.testing)
     kapt(libs.hilt.android.compiler)
 
     // Ui
@@ -74,7 +75,7 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.ui.test.junit4.android)
+    kaptAndroidTest(libs.hilt.android.compiler)
     debugImplementation(libs.ui.test.manifest)
     androidTestImplementation(libs.androidx.espresso.core)
 }

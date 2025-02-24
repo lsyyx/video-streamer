@@ -79,6 +79,8 @@ dependencies {
 
     //Testing
     testImplementation(libs.junit)
+    kaptAndroidTest(libs.hilt.android.compiler)
+    debugImplementation(libs.ui.test.manifest)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

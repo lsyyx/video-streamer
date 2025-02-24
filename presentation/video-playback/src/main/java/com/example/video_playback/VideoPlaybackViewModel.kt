@@ -1,6 +1,7 @@
 package com.example.video_playback
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -31,8 +32,13 @@ class VideoPlaybackViewModel @Inject constructor() : ViewModel() {
 
     private var mediaItem: MediaItem? = null
 
+    private val _isPlayerInitialized = MutableStateFlow(false)
+    val isPlayerInitialized: StateFlow<Boolean> = _isPlayerInitialized
+
     fun initPlayer(context: Context, videoUrl: String) {
         if (_exoPlayer != null) return
+
+        Log.d("VideoPlaybackViewModel", videoUrl)
 
         mediaItem = MediaItem.fromUri(videoUrl)
 
@@ -47,12 +53,14 @@ class VideoPlaybackViewModel @Inject constructor() : ViewModel() {
                 }
             })
         }
+        _isPlayerInitialized.value = true
     }
 
     fun releasePlayer() {
         _exoPlayer?.let {
             playbackPosition = it.currentPosition
             playWhenReady = it.playWhenReady
+            _isPlayerInitialized.value = false
             it.removeListener(object : Player.Listener {})
             it.release()
         }
